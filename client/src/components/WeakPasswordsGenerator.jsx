@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import StatusMessage from "./StatusMessage";
 
 const WeakPasswordsGenerator = () => {
     const [numberOfPasswords, setNumberOfPasswords] = useState(1);
@@ -105,17 +106,11 @@ const WeakPasswordsGenerator = () => {
             </form>
             <div className="mt-3">
                 {errorMessage.length > 0 && (
-                    <div
-                        className="alert alert-danger h-25 mb-2 p-2"
-                        style={{ background: "#ff8888", color: "black" }}
-                    >
-                        {errorMessage}
-                    </div>
+                    <StatusMessage message={errorMessage} alert="danger"/>
+
                 )}
                 {successMessage.length > 0 && (
-                    <div className="alert alert-success h-25 mb-2 p-2">
-                        {successMessage}
-                    </div>
+                    <StatusMessage message={successMessage} alert="success"/>
                 )}
             </div>
         </div>

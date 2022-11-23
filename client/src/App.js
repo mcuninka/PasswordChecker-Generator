@@ -9,11 +9,9 @@ import ImportPasswords from "./components/ImportPasswords";
 const App = () => {
     return (
         <div>
-            <div className="d-flex">
+            <div className="main-container">
                 <PasswordCheckerForm />
                 <PasswordGenerator />
-            </div>
-            <div className="d-flex">
                 <WeakPasswordsGenerator />
                 <ImportPasswords />
             </div>

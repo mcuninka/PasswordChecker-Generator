@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import StatusMessage from "./StatusMessage";
 
 const PasswordGenerator = () => {
     const [passwordLength, setPasswordLength] = useState(12);
@@ -70,12 +71,8 @@ const PasswordGenerator = () => {
             </form>
             <div className="mt-3">
                 {errorMessage.length > 0 && (
-                    <div
-                        className="alert alert-danger h-25 mb-2 p-2"
-                        style={{ background: "#ff8888", color: "black" }}
-                    >
-                        {errorMessage}
-                    </div>
+                    <StatusMessage message={errorMessage} alert='danger'/>
+
                 )}
                 {randomPassword.length > 0 && (
                     <div

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import StatusMessage from "./StatusMessage";
 
 const PasswordCheckerForm = () => {
     const [password, setPassword] = useState("");
@@ -64,19 +65,11 @@ const PasswordCheckerForm = () => {
             <div className="mt-3">
                 {errors.length > 0 &&
                     errors.map((error, index) => (
-                        <div
-                            key={index}
-                            className="alert alert-danger h-25 mb-2 p-2"
-                            style={{ background: "#ff8888", color: "black" }}
-                        >
-                            {error}
-                        </div>
+                        <StatusMessage key={index} message={error} alert='danger'/>
                     ))}
 
                 {validPasswordMessage.length > 0 && (
-                    <div className="alert alert-success h-25 mb-2 p-2">
-                        {validPasswordMessage}
-                    </div>
+                    <StatusMessage message={validPasswordMessage} alert='success'/>
                 )}
             </div>
         </div>

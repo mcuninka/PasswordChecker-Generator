@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import StatusMessage from "./StatusMessage";
 
 const ImportPasswords = () => {
     const [selectedFile, setSelectedFile] = useState();
@@ -8,6 +9,9 @@ const ImportPasswords = () => {
 
     const checkPasswords = async (e) => {
         e.preventDefault();
+
+        setErrorMessage('');
+        setSavedMessage('');
 
         const formData = new FormData();
         formData.append("file", selectedFile);
@@ -55,17 +59,10 @@ const ImportPasswords = () => {
             </form>
             <div className="mt-3">
                 {errorMessage.length > 0 && (
-                    <div
-                        className="alert alert-danger h-25 mb-2 p-2"
-                        style={{ background: "#ff8888", color: "black" }}
-                    >
-                        {errorMessage}
-                    </div>
+                    <StatusMessage message={errorMessage} alert='danger'/>
                 )}
                 {savedMessage.length > 0 && (
-                    <div className="alert alert-success h-25 mb-2 p-2">
-                        {savedMessage}
-                    </div>
+                    <StatusMessage message={savedMessage} alert='success'/>
                 )}
             </div>
         </div>
