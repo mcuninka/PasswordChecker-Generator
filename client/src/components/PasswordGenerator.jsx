@@ -7,10 +7,18 @@ const PasswordGenerator = () => {
     const [errorMessage, setErrorMessage] = useState("");
     const [randomPassword, setRandomPassword] = useState("");
     const [copyStatus, setCopyStatus] = useState("");
+    const maxPasswordLength = 50;
 
+    // method to generate password based on the password length from user's input
     const generatePassword = async (e) => {
         e.preventDefault();
 
+        // set both error message and random password to an empty string so no message is displayed
+        // before the backend is called
+        setErrorMessage("");
+        setRandomPassword("");
+
+        // call backend to generate password and set the randomPassword prop to that password
         axios
             .post("/generatePassword", { passwordLength: passwordLength })
             .then((res) => {
@@ -20,6 +28,7 @@ const PasswordGenerator = () => {
                 if (res.data.hasOwnProperty("error")) {
                     setErrorMessage(res.data["error"]);
 
+                    // if there is an error message, display it only for 5 seconds
                     setTimeout(() => {
                         setErrorMessage([]);
                     }, 5000);
@@ -29,12 +38,19 @@ const PasswordGenerator = () => {
             });
     };
 
+    /**
+     * Method to set prop setPasswordLength as user types numbers
+     * @param e onChange event 
+     */
     const inputChange = (e) => {
         const input = e.currentTarget.value;
+
+        // If user tries to type minus value, that is converted to positive value
+        // and if inserts higher number than maxPasswordLength, it changes to the value of maxPasswordLength
         if (input < 0) {
             setPasswordLength(Math.abs(input));
-        } else if (input > 50) {
-            setPasswordLength(50);
+        } else if (input > maxPasswordLength) {
+            setPasswordLength(maxPasswordLength);
         } else {
             setPasswordLength(input);
         }
@@ -76,7 +92,7 @@ const PasswordGenerator = () => {
                 )}
                 {randomPassword.length > 0 && (
                     <div
-                        className="alert alert-success h-25 mb-2 p-2"
+                        className="alert alert-success h-25 w-75 mb-2 p-2"
                         style={{ cursor: "pointer" }}
                         onClick={() => {
                             navigator.clipboard.writeText(randomPassword);

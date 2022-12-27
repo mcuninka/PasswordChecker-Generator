@@ -2,13 +2,6 @@
 
 body {
     background-image: url('background.jpg');
-    /* background: rgb(2, 0, 36);
-    background: linear-gradient(
-        344deg,
-        rgba(2, 0, 36, 1) 0%,
-        rgba(21, 36, 20, 1) 35%,
-        rgba(0, 255, 0, 1) 100%
-    ); */
     font-family: "Poppins", sans-serif;
     height: 100vh;
 }

@@ -1,7 +1,9 @@
 import re
-import random
+import secrets
 import string
 import requests
+import os
+import random
 
 class Password:
     def __init__(self):
@@ -9,6 +11,7 @@ class Password:
         self._maxPasswordLength = 50
         self._commonPasswords = []
 
+    # method to get top 100 common passwrods from GitHub as txt file
     def getCommonPasswords(self):
         url = 'https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/Common-Credentials/10-million-password-list-top-100.txt'
 
@@ -20,6 +23,15 @@ class Password:
         else:
             print(r.text)
 
+    # method to check password strength
+    # condtions: 
+        # Password should have at least a length of 12 characters
+        # Password should contain at least 1 number
+        # Password should contain at least 1 special characters
+        # Password should contain at least 1 upper case letter
+        # Password should contain at least 1 lower case letter
+        # The password does not exists in the common passwords
+    # @param password String to check
     def checkPassword(self, password):
         errors = []
 
@@ -42,25 +54,24 @@ class Password:
                 if re.search(r"\d", password) is None:
                     errors.append('Password must include at least 1 digit.')
 
-                if re.search(r"[@_!#$%^&*()<>?/|}{~:]", password) is None:
+                if re.search(r"[!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]", password) is None:
                     errors.append('Password must include at least 1 special character.')
-
-                # if not any(p in password for p in string.punctuation):
-                #     errors.append('Password must include at least 1 special character.')
 
         if len(errors) > 0:
             return errors
         else:
             return 'Your password fulfill  all the requirements.'
 
+    # method to check passwords from a provided file
+    # @param file File containing passwords
     def checkPasswords(self, file):
         try:
-            fileText = file.read().decode('utf-8').split('\n')
+            fileText = file.read().decode('utf-8').split(os.linesep)
             with open('PasswordsCheck.txt', 'w') as f:
                 for i in range(len(fileText)) :
 
                     if i < len(fileText) - 1:
-                        f.write(fileText[i] + '\t' + str(self.checkPassword(fileText[i])) + '\n\n')
+                        f.write(fileText[i] + '\t' + str(self.checkPassword(fileText[i])))
                     else:
                         f.write(fileText[i] + '\n' + '\t' + str(self.checkPassword(fileText[i])))
             return 'Checked and Saved successfully.'
@@ -70,6 +81,9 @@ class Password:
         except Exception:
             return {'error': 'Something went wrong.'}
 
+    # method to genarate 1 strong password
+    # @param passwordLength The length of the password, must be greater than minPasswordsLength
+    # and shorter than maxPasswordslength
     def generatePassword(self, passwordLength):
         if passwordLength < 0:
             return {'error': 'Number of characters must be a positive number.'}
@@ -79,11 +93,14 @@ class Password:
             return {'error': f'Password can not have more than {self._maxPasswordLength} characters.'}
         else:
             characters = string.ascii_lowercase + \
-            string.ascii_uppercase + string.digits + '@_!#$%^&*()<>?/|}{~:'
+            string.ascii_uppercase + string.digits + string.punctuation
             randomPassword = ''.join(random.choice(characters)
                                     for i in range(passwordLength))
             return randomPassword
 
+    # generates random WEAK passwords and saves them to txt file
+    # @param numberOfPasswords Input how many passwords should be generated
+    # @param passwordLength The length of generated passwords
     def generateRandomWeakPasswords(self, numberOfPasswords, passwordLength):
         try:
             if numberOfPasswords == 0 or passwordLength == 0:
@@ -118,12 +135,11 @@ class Password:
                                 string.punctuation + string.ascii_uppercase,
                                 string.punctuation]
 
-                with open('WeakPasswords.txt', 'w') as file: # Also possible with a+ to append already existing file
-                    # file.write(f'{passwordLength} characters long passwords:\n')                
-                    for i in range(numberOfPasswords):
-                        randomRule = random.choice(characters)
+                with open('WeakPasswords.txt', 'w') as file: # Also possible with a+ to append already existing file              
+                    for _ in range(numberOfPasswords):
+                        randomRule = secrets.choice(characters)
                         print(randomRule)
-                        randomWeakPassword = ''.join(random.choice(randomRule)
+                        randomWeakPassword = ''.join(secrets.choice(randomRule)
                                                 for i in range(passwordLength))
                         file.write(randomWeakPassword + '\n')
 

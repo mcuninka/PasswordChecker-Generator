@@ -1,6 +1,6 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.css";
-import PasswordCheckerForm from "./components/PasswordCheckerForm";
+import PasswordChecker from "./components/PasswordChecker";
 import PasswordGenerator from "./components/PasswordGenerator";
 import "./App.css";
 import WeakPasswordsGenerator from "./components/WeakPasswordsGenerator";
@@ -10,7 +10,7 @@ const App = () => {
     return (
         <div>
             <div className="main-container">
-                <PasswordCheckerForm />
+                <PasswordChecker />
                 <PasswordGenerator />
                 <WeakPasswordsGenerator />
                 <ImportPasswords />

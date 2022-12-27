@@ -7,6 +7,10 @@ const ImportPasswords = () => {
     const [errorMessage, setErrorMessage] = useState("");
     const [savedMessage, setSavedMessage] = useState("");
 
+    // method to check passwords from provided txt file
+    // firstly set both error and saved message to an empty string, so no message is displayed
+    // then append file to the form data and call backend route to check passwords 
+    // and set either saved or error message
     const checkPasswords = async (e) => {
         e.preventDefault();
 
@@ -20,6 +24,7 @@ const ImportPasswords = () => {
             if (res.data.hasOwnProperty("error")) {
                 setErrorMessage(res.data["error"]);
 
+                // if there is an error message, display it only for 5 seconds
                 setTimeout(() => {
                     setErrorMessage([]);
                 }, 5000);
@@ -29,6 +34,7 @@ const ImportPasswords = () => {
         });
     };
 
+    // method to set file to the selected file prop
     const changeHandler = (e) => {
         setSelectedFile(e.currentTarget.files[0]);
     };

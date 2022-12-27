@@ -5,10 +5,12 @@ import password
 app = Flask(__name__)
 pwd = password.Password()
 
+# route to check the password
 @app.route('/passwordCheck', methods=['POST'])
 def checkPassword():
     return pwd.checkPassword(request.json['password'])
 
+# route to generate 1 strong password
 @app.route('/generatePassword', methods=['POST'])
 def generatePassword():
     try:
@@ -19,6 +21,7 @@ def generatePassword():
     except Exception:
         return {'error': 'Something went wrong.'}
 
+# route to generate weak passwords from 2 user inputs (number of passwords & password length) 
 @app.route('/generateWeakPasswords', methods=['POST'])
 def generateRandomWeakPasswords():
     try:
@@ -30,6 +33,8 @@ def generateRandomWeakPasswords():
     except Exception:
         return {'error': 'Something went wrong.'}
 
+# route to check passwords from txt file
+# checks if the file is txt file and has txt extension
 @app.route('/checkPasswords', methods=['POST'])
 def checkPasswords():
     try:
@@ -50,6 +55,7 @@ def checkPasswords():
         return {'error': 'Something went wrong.'}
 
 
+# main method which firstly gets common passwords from gitHub and then runs the flask application
 if __name__ == '__main__':
     pwd.getCommonPasswords()
     app.run(debug=True)

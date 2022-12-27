@@ -11,6 +11,9 @@ const WeakPasswordsGenerator = () => {
     const maxNumberOfPasswords = 1000;
     const maxPasswordLength = 50;
 
+    // method to generate passwords based on number of passwords and password length
+    // firstly set both error and success message to empty string, so no message is displayed
+    // then call backend route to generate password and set either success or error message
     const generatePasswords = async (e) => {
         e.preventDefault();
         setErrorMessage("");
@@ -25,6 +28,7 @@ const WeakPasswordsGenerator = () => {
                 if (res.data.hasOwnProperty("error")) {
                     setErrorMessage(res.data["error"]);
 
+                    // if there is an error message, display it only for 5 seconds
                     setTimeout(() => {
                         setErrorMessage([]);
                     }, 5000);
@@ -34,12 +38,20 @@ const WeakPasswordsGenerator = () => {
             });
     };
 
+    /**
+     * Method to set props numberOfPasswords and passwordLength as user types numbers
+     * @param e onChange event 
+     */
     const inputChange = (e) => {
         const inputField = e.currentTarget.id;
 
         switch (inputField) {
             case "numberOfPasswords":
                 const input = e.currentTarget.value;
+
+                // If user tries to type minus value, that is converted to positive value
+                // and if inserts higher number than maxNumberOfPasswords, it changes to the value of maxNumberOfPasswords
+                // the same applies for passwordLength
                 if (input < 0) {
                     setNumberOfPasswords(Math.abs(input));
                 } else if (input > maxNumberOfPasswords) {

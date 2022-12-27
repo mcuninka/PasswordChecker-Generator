@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import axios from "axios";
 import StatusMessage from "./StatusMessage";
 
-const PasswordCheckerForm = () => {
+const PasswordChecker = () => {
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState([]);
     const [validPasswordMessage, setValidPasswordMessage] = useState("");
 
+    // method to check password
+    // firstly set errors to an empty array and valid message to an empty string, so no message is displayed
+    // then call backend route to check the password and set either valid or error message(s)
     const checkPassword = async (e) => {
         e.preventDefault();
         setErrors([]);
@@ -17,6 +20,8 @@ const PasswordCheckerForm = () => {
                 setValidPasswordMessage(res.data);
             } else {
                 setErrors(res.data);
+
+                // if there is an error message, display it only for 5 seconds
                 setTimeout(() => {
                     setErrors([]);
                 }, 5000);
@@ -24,10 +29,12 @@ const PasswordCheckerForm = () => {
         });
     };
 
+    // method to clear input for password and set errors to an empty array and valid message to an empty string
     const clearInput = (e) => {
         e.preventDefault();
         setPassword("");
         setErrors([]);
+        setValidPasswordMessage("");
     };
 
     return (
@@ -76,4 +83,4 @@ const PasswordCheckerForm = () => {
     );
 };
 
-export default PasswordCheckerForm;
+export default PasswordChecker;
