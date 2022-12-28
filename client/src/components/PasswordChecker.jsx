@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
 import StatusMessage from "./StatusMessage";
 
 const PasswordChecker = () => {
-    const [password, setPassword] = useState("");
+    const passwordRef = useRef(null);
     const [errors, setErrors] = useState([]);
     const [validPasswordMessage, setValidPasswordMessage] = useState("");
+    const timer = useRef(null);
 
     // method to check password
     // firstly set errors to an empty array and valid message to an empty string, so no message is displayed
@@ -14,15 +15,16 @@ const PasswordChecker = () => {
         e.preventDefault();
         setErrors([]);
         setValidPasswordMessage("");
+        clearTimeout(timer.current);
         
-        axios.post("/passwordCheck", { password: password }).then((res) => {
+        axios.post("/passwordCheck", { password: passwordRef.current.value }).then((res) => {
             if (typeof res.data === "string") {
                 setValidPasswordMessage(res.data);
             } else {
                 setErrors(res.data);
 
                 // if there is an error message, display it only for 5 seconds
-                setTimeout(() => {
+                timer.current = setTimeout(() => {
                     setErrors([]);
                 }, 5000);
             }
@@ -32,7 +34,7 @@ const PasswordChecker = () => {
     // method to clear input for password and set errors to an empty array and valid message to an empty string
     const clearInput = (e) => {
         e.preventDefault();
-        setPassword("");
+        passwordRef.current.value = null;
         setErrors([]);
         setValidPasswordMessage("");
     };
@@ -52,10 +54,7 @@ const PasswordChecker = () => {
                         className="form-control me-2"
                         style={{ width: "15rem" }}
                         placeholder="Enter password"
-                        onChange={(e) => {
-                            setPassword(e.currentTarget.value);
-                        }}
-                        value={password}
+                        ref={passwordRef}
                     />
                     <button type="submit" className="btn btn-success me-2">
                         Check Password

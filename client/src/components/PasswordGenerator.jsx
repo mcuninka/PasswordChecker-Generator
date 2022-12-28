@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
 import StatusMessage from "./StatusMessage";
 
@@ -8,6 +8,7 @@ const PasswordGenerator = () => {
     const [randomPassword, setRandomPassword] = useState("");
     const [copyStatus, setCopyStatus] = useState("");
     const maxPasswordLength = 50;
+    const timer = useRef(null);
 
     // method to generate password based on the password length from user's input
     const generatePassword = async (e) => {
@@ -17,10 +18,11 @@ const PasswordGenerator = () => {
         // before the backend is called
         setErrorMessage("");
         setRandomPassword("");
+        clearTimeout(timer.current);
 
         // call backend to generate password and set the randomPassword prop to that password
         axios
-            .post("/generatePassword", { passwordLength: passwordLength })
+            .post("/generateStrongPassword", { passwordLength: passwordLength })
             .then((res) => {
                 setErrorMessage("");
                 setRandomPassword("");
@@ -29,7 +31,7 @@ const PasswordGenerator = () => {
                     setErrorMessage(res.data["error"]);
 
                     // if there is an error message, display it only for 5 seconds
-                    setTimeout(() => {
+                    timer.current = setTimeout(() => {
                         setErrorMessage([]);
                     }, 5000);
                 } else {
@@ -44,6 +46,7 @@ const PasswordGenerator = () => {
      */
     const inputChange = (e) => {
         const input = e.currentTarget.value;
+        console.log("rendered")
 
         // If user tries to type minus value, that is converted to positive value
         // and if inserts higher number than maxPasswordLength, it changes to the value of maxPasswordLength
@@ -55,6 +58,15 @@ const PasswordGenerator = () => {
             setPasswordLength(input);
         }
     }
+
+    // method to reset props
+    const clearInput = (e) => {
+        e.preventDefault();
+        setPasswordLength(12);
+        setErrorMessage("");
+        setRandomPassword("");
+        setCopyStatus("");
+    };
 
     return (
         <div className="m-3 w-50">
@@ -78,10 +90,17 @@ const PasswordGenerator = () => {
                         }
                     />
                     <button
-                        className="btn btn-primary"
+                        className="btn btn-primary me-2"
                         onClick={(e) => generatePassword(e)}
                     >
                         Generate Password
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-danger"
+                        onClick={(e) => clearInput(e)}
+                    >
+                        Reset
                     </button>
                 </div>
             </form>

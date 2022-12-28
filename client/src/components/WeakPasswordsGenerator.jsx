@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
 import StatusMessage from "./StatusMessage";
 
@@ -7,6 +7,7 @@ const WeakPasswordsGenerator = () => {
     const [passwordLength, setPasswordLength] = useState(12);
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setsuccessMessage] = useState("");
+    const timer = useRef(null);
 
     const maxNumberOfPasswords = 1000;
     const maxPasswordLength = 50;
@@ -18,6 +19,7 @@ const WeakPasswordsGenerator = () => {
         e.preventDefault();
         setErrorMessage("");
         setsuccessMessage("");
+        clearTimeout(timer.current);
 
         axios
             .post("/generateWeakPasswords", {
@@ -29,7 +31,7 @@ const WeakPasswordsGenerator = () => {
                     setErrorMessage(res.data["error"]);
 
                     // if there is an error message, display it only for 5 seconds
-                    setTimeout(() => {
+                    timer.current = setTimeout(() => {
                         setErrorMessage([]);
                     }, 5000);
                 } else {
@@ -75,6 +77,15 @@ const WeakPasswordsGenerator = () => {
         }
     };
 
+    // method to reset props
+    const clearInput = (e) => {
+        e.preventDefault();
+        setPasswordLength(12);
+        setNumberOfPasswords(1);
+        setErrorMessage("");
+        setsuccessMessage("");
+    };
+
     return (
         <div className="m-3 w-50">
             <h2>Weak Password Generator</h2>
@@ -109,10 +120,17 @@ const WeakPasswordsGenerator = () => {
                         onChange={(e) => inputChange(e)}
                     />
                     <button
-                        className="btn btn-primary"
+                        className="btn btn-primary me-2"
                         onClick={(e) => generatePasswords(e)}
                     >
                         Generate Passwords
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-danger"
+                        onClick={(e) => clearInput(e)}
+                    >
+                        Reset
                     </button>
                 </div>
             </form>

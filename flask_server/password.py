@@ -3,7 +3,6 @@ import secrets
 import string
 import requests
 import os
-import random
 
 class Password:
     def __init__(self):
@@ -73,10 +72,9 @@ class Password:
             fileText = file.read().decode('utf-8').split(os.linesep)
             with open('PasswordsCheck.txt', 'w') as f:
                 for i in range(len(fileText)):
-
                     if i < len(fileText) - 1:
-                        f.write(fileText[i] + '\t' +
-                                str(self.checkPassword(fileText[i])))
+                        f.write(fileText[i] + '\n' + '\t' +
+                                str(self.checkPassword(fileText[i])) + os.linesep)
                     else:
                         f.write(fileText[i] + '\n' + '\t' +
                                 str(self.checkPassword(fileText[i])))

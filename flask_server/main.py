@@ -39,7 +39,6 @@ def generateWeakPasswords():
 def checkPasswords():
     try:
         file = request.files['file']
-        print(file.content_type)
         if file.content_type == 'text/plain':
             if file.filename.split('.')[1] == 'txt':
                 return pwd.checkPasswords(file)
