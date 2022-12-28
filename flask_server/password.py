@@ -24,7 +24,7 @@ class Password:
             print(r.text)
 
     # method to check password strength
-    # condtions: 
+    # condtions:
         # Password should have at least a length of 12 characters
         # Password should contain at least 1 number
         # Password should contain at least 1 special characters
@@ -39,23 +39,27 @@ class Password:
             errors.append('Please enter password.')
         else:
             if password in self._commonPasswords:
-                errors.append('This is a common password, choose stronger one.')
+                errors.append(
+                    'This is a common password, choose stronger one.')
             else:
                 if len(password) < self._minPasswordLength:
                     errors.append(
                         f'Password must include at least {self._minPasswordLength} characters')
 
                 if re.search(r"[a-z]", password) is None:
-                    errors.append('Password must include at least 1 lower character.')
+                    errors.append(
+                        'Password must include at least 1 lower character.')
 
                 if re.search(r"[A-Z]", password) is None:
-                    errors.append('Password must include at least 1 upper character.')
+                    errors.append(
+                        'Password must include at least 1 upper character.')
 
                 if re.search(r"\d", password) is None:
                     errors.append('Password must include at least 1 digit.')
 
                 if re.search(r"[!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]", password) is None:
-                    errors.append('Password must include at least 1 special character.')
+                    errors.append(
+                        'Password must include at least 1 special character.')
 
         if len(errors) > 0:
             return errors
@@ -68,12 +72,14 @@ class Password:
         try:
             fileText = file.read().decode('utf-8').split(os.linesep)
             with open('PasswordsCheck.txt', 'w') as f:
-                for i in range(len(fileText)) :
+                for i in range(len(fileText)):
 
                     if i < len(fileText) - 1:
-                        f.write(fileText[i] + '\t' + str(self.checkPassword(fileText[i])))
+                        f.write(fileText[i] + '\t' +
+                                str(self.checkPassword(fileText[i])))
                     else:
-                        f.write(fileText[i] + '\n' + '\t' + str(self.checkPassword(fileText[i])))
+                        f.write(fileText[i] + '\n' + '\t' +
+                                str(self.checkPassword(fileText[i])))
             return 'Checked and Saved successfully.'
 
         except FileNotFoundError:
@@ -81,10 +87,20 @@ class Password:
         except Exception:
             return {'error': 'Something went wrong.'}
 
+
+    # helper method to generate password
+    # @param passwordLength The length of the password
+    def generatePassword(self, passwordLength):
+        characters = string.ascii_lowercase + \
+                    string.ascii_uppercase + string.digits + string.punctuation
+        randomPassword = ''.join(secrets.choice(characters)
+                                     for _ in range(passwordLength))
+        return randomPassword
+
     # method to genarate 1 strong password
     # @param passwordLength The length of the password, must be greater than minPasswordsLength
     # and shorter than maxPasswordslength
-    def generatePassword(self, passwordLength):
+    def generateStrongPassword(self, passwordLength):
         if passwordLength < 0:
             return {'error': 'Number of characters must be a positive number.'}
         elif passwordLength < self._minPasswordLength:
@@ -92,57 +108,37 @@ class Password:
         elif passwordLength > self._maxPasswordLength:
             return {'error': f'Password can not have more than {self._maxPasswordLength} characters.'}
         else:
-            characters = string.ascii_lowercase + \
-            string.ascii_uppercase + string.digits + string.punctuation
-            randomPassword = ''.join(random.choice(characters)
-                                    for i in range(passwordLength))
-            return randomPassword
+            found = False
+
+            # loop while strong password not found
+            while not found:
+                randomPassword = self.generatePassword(passwordLength)
+                checkedRandomPassword = self.checkPassword(randomPassword)
+
+                if isinstance(checkedRandomPassword, str):
+                    found = True
+                    return randomPassword
 
     # generates random WEAK passwords and saves them to txt file
     # @param numberOfPasswords Input how many passwords should be generated
     # @param passwordLength The length of generated passwords
-    def generateRandomWeakPasswords(self, numberOfPasswords, passwordLength):
+    def generateWeakPasswords(self, numberOfPasswords, passwordLength):
         try:
             if numberOfPasswords == 0 or passwordLength == 0:
                 return {'error': 'Input must be greater than 0.'}
             else:
-                characters = [string.ascii_lowercase + string.ascii_uppercase + string.digits,
-                                string.ascii_lowercase + string.ascii_uppercase + string.punctuation,
-                                string.ascii_lowercase + string.digits + string.punctuation,
-                                string.ascii_lowercase + string.ascii_uppercase,
-                                string.ascii_lowercase + string.punctuation,
-                                string.ascii_lowercase + string.digits,
-                                string.ascii_lowercase,
-                                string.ascii_uppercase + string.ascii_lowercase + string.digits,
-                                string.ascii_uppercase + string.ascii_lowercase + string.punctuation,
-                                string.ascii_uppercase + string.digits + string.punctuation,
-                                string.ascii_uppercase + string.ascii_lowercase,
-                                string.ascii_uppercase + string.punctuation,
-                                string.ascii_uppercase + string.digits,
-                                string.ascii_uppercase,
-                                string.digits + string.ascii_lowercase + string.ascii_uppercase,
-                                string.digits + string.ascii_lowercase + string.punctuation,
-                                string.digits + string.ascii_uppercase + string.punctuation,
-                                string.digits + string.ascii_lowercase,
-                                string.digits + string.punctuation,
-                                string.digits + string.ascii_uppercase,
-                                string.digits,
-                                string.punctuation + string.ascii_lowercase + string.ascii_uppercase,
-                                string.punctuation + string.ascii_lowercase + string.digits,
-                                string.punctuation + string.ascii_uppercase + string.digits,
-                                string.punctuation + string.ascii_lowercase,
-                                string.punctuation + string.punctuation,
-                                string.punctuation + string.ascii_uppercase,
-                                string.punctuation]
-
-                with open('WeakPasswords.txt', 'w') as file: # Also possible with a+ to append already existing file              
+                numberOfWeakPasswords = 0
+ 
+                with open('WeakPasswords.txt', 'w') as file:
                     for _ in range(numberOfPasswords):
-                        randomRule = secrets.choice(characters)
-                        print(randomRule)
-                        randomWeakPassword = ''.join(secrets.choice(randomRule)
-                                                for i in range(passwordLength))
-                        file.write(randomWeakPassword + '\n')
-
+                        while numberOfWeakPasswords < numberOfPasswords:
+                            randomPassword = self.generatePassword(passwordLength)
+                            checkRandomPassword = self.checkPassword(randomPassword)
+                            
+                            if not isinstance(checkRandomPassword, str):
+                                file.write(randomPassword + '\n')
+                                numberOfWeakPasswords += 1
+                                
                 return 'Saved successfully.'
 
         except FileNotFoundError:

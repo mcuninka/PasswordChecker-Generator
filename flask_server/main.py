@@ -11,11 +11,11 @@ def checkPassword():
     return pwd.checkPassword(request.json['password'])
 
 # route to generate 1 strong password
-@app.route('/generatePassword', methods=['POST'])
-def generatePassword():
+@app.route('/generateStrongPassword', methods=['POST'])
+def generateStrongPassword():
     try:
         passwordLength = int(request.json['passwordLength'])
-        return pwd.generatePassword(passwordLength)
+        return pwd.generateStrongPassword(passwordLength)
     except ValueError:
         return {'error': 'Input must be a number.'}
     except Exception:
@@ -23,11 +23,11 @@ def generatePassword():
 
 # route to generate weak passwords from 2 user inputs (number of passwords & password length) 
 @app.route('/generateWeakPasswords', methods=['POST'])
-def generateRandomWeakPasswords():
+def generateWeakPasswords():
     try:
         numberOfPasswords = int(request.json['numberOfPasswords'])
         passwordLength = int(request.json['passwordLength'])
-        return pwd.generateRandomWeakPasswords(numberOfPasswords, passwordLength)
+        return pwd.generateWeakPasswords(numberOfPasswords, passwordLength)
     except ValueError:
         return {'error': 'Input must be a number.'}
     except Exception:
