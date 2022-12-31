@@ -1,16 +1,14 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
 import StatusMessage from "./StatusMessage";
+import * as Constants from "../constants"
 
 const WeakPasswordsGenerator = () => {
     const [numberOfPasswords, setNumberOfPasswords] = useState(1);
-    const [passwordLength, setPasswordLength] = useState(12);
+    const [passwordLength, setPasswordLength] = useState(Constants.MIN_PASSWORD_LENGTH);
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setsuccessMessage] = useState("");
     const timer = useRef(null);
-
-    const maxNumberOfPasswords = 1000;
-    const maxPasswordLength = 50;
 
     // method to generate passwords based on number of passwords and password length
     // firstly set both error and success message to empty string, so no message is displayed
@@ -56,8 +54,8 @@ const WeakPasswordsGenerator = () => {
                 // the same applies for passwordLength
                 if (input < 0) {
                     setNumberOfPasswords(Math.abs(input));
-                } else if (input > maxNumberOfPasswords) {
-                    setNumberOfPasswords(maxNumberOfPasswords);
+                } else if (input > Constants.NUMBER_OF_WEAK_PASSWORDS) {
+                    setNumberOfPasswords(Constants.NUMBER_OF_WEAK_PASSWORDS);
                 } else {
                     setNumberOfPasswords(input);
                 }
@@ -65,9 +63,9 @@ const WeakPasswordsGenerator = () => {
             case "passwordLength":
                 const inputPasswordLength = e.currentTarget.value;
                 if (inputPasswordLength < 0) {
-                    setPasswordLength(Math.abs(input));
-                } else if (inputPasswordLength > maxPasswordLength) {
-                    setPasswordLength(maxPasswordLength);
+                    setPasswordLength(Math.abs(inputPasswordLength));
+                } else if (inputPasswordLength > Constants.MAX_PASSWORD_LENGTH) {
+                    setPasswordLength(Constants.MAX_PASSWORD_LENGTH);
                 } else {
                     setPasswordLength(inputPasswordLength);
                 }
@@ -80,14 +78,14 @@ const WeakPasswordsGenerator = () => {
     // method to reset props
     const clearInput = (e) => {
         e.preventDefault();
-        setPasswordLength(12);
+        setPasswordLength(Constants.MIN_PASSWORD_LENGTH);
         setNumberOfPasswords(1);
         setErrorMessage("");
         setsuccessMessage("");
     };
 
     return (
-        <div className="m-3 w-50">
+        <div className="m-3">
             <h2>Weak Password Generator</h2>
             <form onSubmit={generatePasswords}>
                 <div className="d-flex justify-content-start align-items-center mt-3">
@@ -99,7 +97,7 @@ const WeakPasswordsGenerator = () => {
                         id="numberOfPasswords"
                         type="number"
                         min={1}
-                        max={maxNumberOfPasswords}
+                        max={Constants.NUMBER_OF_WEAK_PASSWORDS}
                         value={numberOfPasswords}
                         className="form-control me-2"
                         style={{ width: "4.7rem" }}
@@ -113,7 +111,7 @@ const WeakPasswordsGenerator = () => {
                         id="passwordLength"
                         type="number"
                         min={1}
-                        max={maxPasswordLength}
+                        max={Constants.MAX_PASSWORD_LENGTH}
                         value={passwordLength}
                         className="form-control me-2"
                         style={{ width: "4.5rem" }}

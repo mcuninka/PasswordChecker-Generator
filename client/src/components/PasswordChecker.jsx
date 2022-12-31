@@ -40,7 +40,7 @@ const PasswordChecker = () => {
     };
 
     return (
-        <div className="m-3 w-50">
+        <div className="m-3">
             <h2>Password Checker</h2>
             <form onSubmit={checkPassword}>
                 <div className="d-flex justify-content-start align-items-center mt-3">

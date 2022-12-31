@@ -53,7 +53,7 @@ const ImportPasswords = () => {
     };
 
     return (
-        <div className="m-3 w-50">
+        <div className="m-3">
             <h2>Check Passwords</h2>
             <form>
                 <div className="d-flex justify-content-start align-items-center mt-3">

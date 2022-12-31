@@ -1,0 +1,3 @@
+export const MIN_PASSWORD_LENGTH = 12
+export const MAX_PASSWORD_LENGTH = 50
+export const NUMBER_OF_WEAK_PASSWORDS = 100
